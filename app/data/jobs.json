@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Frontend Developer",
+    "skills": ["React", "JavaScript"],
+    "salary": 2000,
+    "location": "Remote"
+  },
+  {
+    "title": "Backend Developer",
+    "skills": ["Python", "SQL"],
+    "salary": 3000,
+    "location": "Remote"
+  },
+  {
+    "title": "AI Engineer",
+    "skills": ["Python", "FastAPI", "LLMs"],
+    "salary": 5000,
+    "location": "Remote"
+  }
+]

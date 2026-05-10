@@ -3,6 +3,7 @@ import requests
 
 from app.prompts import SYSTEM_PROMPT
 from app.models.schemas import AskRequest
+from app.services.data_service import load_jobs
 
 app = FastAPI()
 
@@ -18,10 +19,8 @@ def home():
 
 @app.post("/ask")
 def ask(request: AskRequest):
-    print("before query:::::::::::::::::::::::::")
 
     query = request.query.lower()
-    print("after query:::::::::::::::::::::::::")
     job_keywords = [
         "job",
         "salary",
@@ -32,7 +31,6 @@ def ask(request: AskRequest):
         "backend",
         "frontend"
     ]
-    print   ("after keywords:::::::::::::::::::::::::")
 
     if not any(word in query for word in job_keywords):
 
@@ -50,8 +48,10 @@ def ask(request: AskRequest):
     {request.query}
     """
 
+    print("Your Query:::::", request.query)
+
     try:
-        print("seding response:::::::::::::::::::::::::")
+      # print("Query sent:::::")
         response = requests.post(
             OLLAMA_URL,
             json={
@@ -61,17 +61,26 @@ def ask(request: AskRequest):
             }
             
         )
-        print  ("after response:::::::::::::::::::::::::")
+       
 
         data = response.json()
+        print("Response received:::::", data["response"])
 
         return {
             "response": data["response"]
         }
 
     except Exception as e:
+        print("Exception occurred:::::", str(e))
 
         raise HTTPException(
             status_code=500,
             detail=str(e)
         )
+
+@app.get("/jobs")
+def get_jobs():
+
+    jobs = load_jobs()
+
+    return jobs
