@@ -23,3 +23,19 @@ def search_jobs(skill: str):
             results.append(job)
 
     return results
+
+def format_jobs_context(jobs):
+
+    context = ""
+
+    for job in jobs:
+
+        context += f"""
+        Job Title: {job['title']}
+        Skills: {', '.join(job['skills'])}
+        Salary: {job['salary']}
+        Location: {job['location']}
+
+        """
+
+    return context

@@ -3,8 +3,11 @@ import requests
 
 from app.prompts import SYSTEM_PROMPT
 from app.models.schemas import AskRequest
-from app.services.data_service import load_jobs
-from app.services.data_service import load_jobs, search_jobs
+from app.services.data_service import (
+    load_jobs,
+    search_jobs,
+    format_jobs_context
+)
 
 app = FastAPI()
 
@@ -96,3 +99,56 @@ def search(skill: str):
     return {
         "results": results
     }
+
+@app.post("/search-ai")
+def search_ai(request: AskRequest):
+
+    query = request.query
+
+    matched_jobs = []
+
+    if "python" in query.lower():
+
+        matched_jobs = search_jobs("python")
+
+    elif "react" in query.lower():
+
+        matched_jobs = search_jobs("react")
+
+    context = format_jobs_context(matched_jobs)
+
+    full_prompt = f"""
+    {SYSTEM_PROMPT}
+
+    Context:
+    {context}
+
+    User Question:
+    {query}
+    """
+
+    try:
+        print("Full Prompt Sent to AI:::::::::", full_prompt)
+
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": "phi",
+                "prompt": full_prompt,
+                "stream": False
+            }
+        )
+
+        data = response.json()
+
+        return {
+            "matched_jobs": matched_jobs,
+            "ai_response": data["response"]
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
