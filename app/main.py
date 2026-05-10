@@ -4,6 +4,7 @@ import requests
 from app.prompts import SYSTEM_PROMPT
 from app.models.schemas import AskRequest
 from app.services.data_service import load_jobs
+from app.services.data_service import load_jobs, search_jobs
 
 app = FastAPI()
 
@@ -84,3 +85,14 @@ def get_jobs():
     jobs = load_jobs()
 
     return jobs
+
+
+
+@app.get("/search")
+def search(skill: str):
+
+    results = search_jobs(skill)
+
+    return {
+        "results": results
+    }
