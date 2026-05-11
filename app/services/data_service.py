@@ -17,25 +17,49 @@ def search_jobs(skill: str):
     for job in jobs:
 
         skills = [s.lower() for s in job["skills"]]
-
         if skill.lower() in skills:
 
             results.append(job)
 
     return results
 
+
+
 def format_jobs_context(jobs):
 
-    context = ""
+    if not jobs:
+        return "No matching jobs found."
 
-    for job in jobs:
+    context_lines = []
 
-        context += f"""
-        Job Title: {job['title']}
-        Skills: {', '.join(job['skills'])}
-        Salary: {job['salary']}
-        Location: {job['location']}
+    for job in jobs[:3]:
 
-        """
+        line = (
+            f"{job['title']} | "
+            f"Skills: {', '.join(job['skills'])} | "
+            f"Salary: {job['salary']}"
+        )
 
-    return context
+        context_lines.append(line)
+        print("Service - Formatted job context line:::::", line)
+
+    return "\n".join(context_lines)
+
+
+
+
+# def format_jobs_context(jobs):
+
+#     context = ""
+
+#     for job in jobs:
+
+#         context += f"""
+#         Job Title: {job['title']}
+#         Skills: {', '.join(job['skills'])}
+#         Salary: {job['salary']}
+#         Location: {job['location']}
+
+#         """
+
+#     return context

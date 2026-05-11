@@ -8,9 +8,13 @@ from app.services.data_service import (
     search_jobs,
     format_jobs_context
 )
+from app.services.query_parser import parse_query
 
-app = FastAPI()
-
+app = FastAPI(
+    swagger_ui_parameters={
+        "syntaxHighlight.theme": "obsidian"
+    }
+)
 OLLAMA_URL = "http://localhost:11434/api/generate"
 
 
@@ -108,11 +112,8 @@ def search_ai(request: AskRequest):
     matched_jobs = []
 
     if "python" in query.lower():
-
         matched_jobs = search_jobs("python")
-
     elif "react" in query.lower():
-
         matched_jobs = search_jobs("react")
 
     context = format_jobs_context(matched_jobs)
@@ -120,7 +121,7 @@ def search_ai(request: AskRequest):
     full_prompt = f"""
     {SYSTEM_PROMPT}
 
-    Context:
+    Relevant Job Data:  
     {context}
 
     User Question:
@@ -141,6 +142,8 @@ def search_ai(request: AskRequest):
 
         data = response.json()
 
+        print("AI Response Received:::::::::", data["response"], "Matched Jobs:::::", matched_jobs)
+
         return {
             "matched_jobs": matched_jobs,
             "ai_response": data["response"]
@@ -152,3 +155,12 @@ def search_ai(request: AskRequest):
             status_code=500,
             detail=str(e)
         )
+    
+@app.get("/parse-query")
+def parse(query: str):
+
+    print("Parsing Query:::::", query)
+
+    filters = parse_query(query)
+    print  ("Parsed Filters:::::", filters)
+    return filters
