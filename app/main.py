@@ -11,6 +11,8 @@ from app.services.data_service import (
     generate_insights
 )
 from app.services.query_parser import parse_query
+from app.models.schemas import AskRequest
+from app.ai.intent_detecotor import detect_intent
 
 app = FastAPI(
     swagger_ui_parameters={
@@ -175,3 +177,16 @@ def insights():
     data = generate_insights()
 
     return data
+
+
+@app.post("/intent")
+async def classify_intent(query: AskRequest):
+
+    print("Classifying Intent for Query:::::", query.query)
+    result = detect_intent(query.query)
+
+    print("Detected Intent:::::", result)
+
+    return result
+
+
