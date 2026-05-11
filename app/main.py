@@ -7,7 +7,8 @@ from app.services.data_service import (
     load_jobs,
     search_jobs,
     format_jobs_context,
-    search_jobs_by_filters
+    search_jobs_by_filters,
+    generate_insights
 )
 from app.services.query_parser import parse_query
 
@@ -166,4 +167,11 @@ def parse(query: str):
 
     filters = parse_query(query)
     print  ("Parsed Filters:::::", filters)
+
     return filters
+@app.get("/insights")
+def insights():
+
+    data = generate_insights()
+
+    return data
