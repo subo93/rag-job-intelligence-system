@@ -11,15 +11,31 @@ def load_jobs():
 def search_jobs(skill: str):
 
     jobs = load_jobs()
-
     results = []
+    print()
+
+    # for job in jobs:
+    #     skills = [s.lower() for s in job["skills"]]
+    #     if skill.lower() in skills:
+
+    #         results.append(job)
+
+    #         print("Search_jobs::::::", results)
+
+    # return results
+
 
     for job in jobs:
 
         skills = [s.lower() for s in job["skills"]]
-        if skill.lower() in skills:
 
-            results.append(job)
+    query = skill.lower()
+
+    if any(s in query for s in skills):
+
+        results.append(job)
+
+        print("Search_jobs::::::", results)
 
     return results
 
