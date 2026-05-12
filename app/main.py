@@ -13,6 +13,7 @@ from app.services.data_service import (
 from app.services.query_parser import parse_query
 from app.models.schemas import AskRequest
 from app.ai.intent_detecotor import detect_intent
+from app.services.router_service import route_request
 
 app = FastAPI(
     swagger_ui_parameters={
@@ -189,4 +190,23 @@ async def classify_intent(query: AskRequest):
 
     return result
 
+
+@app.post("/ai-agent")
+async def ai_agent(request: AskRequest):
+
+    print(":::::::::::::::::::/ai-agent:::::::::::::::::")
+    print("User input ::::", request)
+
+    intent_result = detect_intent(request.query)
+
+    print("::::::::::::::::::::::intent:::::::::::::::::::",intent_result)
+
+    response = route_request(
+        intent_result["intent"],
+        request.query
+    )
+
+    
+
+    return response
 
